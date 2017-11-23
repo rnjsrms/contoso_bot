@@ -1,0 +1,7 @@
+KEYS
+
+LUIS.AI
+Key String
+4d8f8aeed14f4e90a526fa12711136bf
+Endpoint
+https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/bc5ca548-9a6b-47b1-b003-e76f03c41ede?subscription-key=4d8f8aeed14f4e90a526fa12711136bf&verbose=true&timezoneOffset=12.0&q=
