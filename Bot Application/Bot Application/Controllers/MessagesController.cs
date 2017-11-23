@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using System.Linq;
+using System;
 
 namespace Bot_Application
 {
@@ -40,6 +42,14 @@ namespace Bot_Application
                 // Handle conversation state changes, like members being added and removed
                 // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
                 // Not available in all channels
+
+                // Add greeting message to newly connecting clients
+                if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
+                {
+                    ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
+                    Activity reply = message.CreateReply("Hi there, how can I help you today?");
+                    connector.Conversations.ReplyToActivityAsync(reply);
+                }
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)
             {

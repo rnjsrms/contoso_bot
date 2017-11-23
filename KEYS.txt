@@ -1,6 +1,11 @@
 KEYS
 
+BOT FRAMEWORK
+http://localhost:3979/api/messages
+
 LUIS.AI
+App Id
+bc5ca548-9a6b-47b1-b003-e76f03c41ede
 Key String
 4d8f8aeed14f4e90a526fa12711136bf
 Endpoint
