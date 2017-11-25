@@ -20,17 +20,17 @@ namespace Bot_Application.Dialogs
         public async Task All(IDialogContext context, LuisResult result)
         {
             var entities = result.Entities;
-            
+
             string message = $"Detected intent: " + string.Join(", ", result.Intents.Select(i => i.Intent));
 
             if (entities.Count() > 0)
             {
                 foreach (var ent in entities)
                 {
-                    message += "\n\n" + ent.Entity;
+                    message += "\n" + ent.Entity;
                 }
             }
-            
+
             await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
@@ -38,7 +38,7 @@ namespace Bot_Application.Dialogs
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = "Sorry, I could not understand your message.\nCould you please try rephrasing that?";
+            string message = "Sorry, I could not understand your message.\n\nCould you please try rephrasing that?";
             await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
@@ -53,7 +53,7 @@ namespace Bot_Application.Dialogs
             HttpResponseMessage response;
             response = await client.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            try
             {
                 var responseString = await response.Content.ReadAsStringAsync();
 
@@ -67,9 +67,9 @@ namespace Bot_Application.Dialogs
                 await context.PostAsync(message);
                 context.Wait(MessageReceived);
             }
-            else
+            catch
             {
-                var message = "Unable to fetch exchange rate data.\nPlease try again.";
+                var message = "Unable to fetch exchange rate data.\n\nPlease try again.";
                 await context.PostAsync(message);
                 context.Wait(MessageReceived);
             }
@@ -85,7 +85,7 @@ namespace Bot_Application.Dialogs
             HttpResponseMessage response;
             response = await client.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+            try
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 var index1 = responseString.IndexOf("close", 286) + 4 + "close".Length;
@@ -98,14 +98,74 @@ namespace Bot_Application.Dialogs
                 await context.PostAsync(message);
                 context.Wait(MessageReceived);
             }
-            else
+            catch
             {
-                var message = "Unable to find stock data.\nPlease try again.";
+                var message = "Unable to find stock data.\n\nPlease try again.";
                 await context.PostAsync(message);
                 context.Wait(MessageReceived);
             }
 
 
+        }
+
+        [LuisIntent("CurrencyCalculation")]
+        public async Task CurrencyCalculation(IDialogContext context, LuisResult result)
+        {
+            String currency_to = "";
+            String currency_from = "";
+            double amount = 0.0;
+
+            foreach (var ent in result.Entities)
+            {
+                if (ent.Type == "currency_to")
+                {
+                    currency_to = ent.Entity.ToUpper();
+                }
+                else if (ent.Type == "currency_from")
+                {
+                    currency_from = ent.Entity.ToUpper();
+                }
+                else if (ent.Type == "amount")
+                {
+                    amount = Convert.ToDouble(ent.Entity);
+                }
+            }
+
+            if ((currency_from == "") || (currency_to == "") || (amount == 0.0))
+            {
+                var message = "Could not process currency conversion.\n\nPlease try rephrasing that.";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+
+            string url = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=" + currency_from + "&to_currency=" + currency_to + "&apikey=HZLXQ37YR6PGEMW7";
+
+            var client = new HttpClient();
+            HttpResponseMessage response;
+            response = await client.GetAsync(url);
+
+            try
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                CurrencyExchangeModel responseModel = JsonConvert.DeserializeObject<CurrencyExchangeModel>(responseString);
+
+                double exchangerate = responseModel.RealtimeCurrencyExchangeRate.ExchangeRate;
+                string from_currency = responseModel.RealtimeCurrencyExchangeRate.From_CurrencyName;
+                string to_currency = responseModel.RealtimeCurrencyExchangeRate.To_CurrencyName;
+
+                double currency_calc = exchangerate * amount;
+
+                string message = amount + " " + from_currency + "(s) equal " + currency_calc + " " + to_currency + "(s)\n\n(data provided by www.alphavantage.co)";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+            catch
+            {
+                var message = "Unable to fetch exchange rate data.\n\nPlease try again.";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
         }
     }
 }
