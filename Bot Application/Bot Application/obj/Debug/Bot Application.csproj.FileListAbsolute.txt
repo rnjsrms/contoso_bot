@@ -86,3 +86,5 @@ C:\Users\rnjsrms\Desktop\contoso_bot\Bot Application\Bot Application\obj\Debug\B
 C:\Users\rnjsrms\Desktop\contoso_bot\Bot Application\Bot Application\obj\Debug\Bot Application.csproj.CoreCompileInputs.cache
 C:\Users\rnjsrms\Desktop\contoso_bot\Bot Application\Bot Application\obj\Debug\Bot Application.dll
 C:\Users\rnjsrms\Desktop\contoso_bot\Bot Application\Bot Application\obj\Debug\Bot Application.pdb
+C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.Azure.Mobile.Client.dll
+C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.Azure.Mobile.Client.xml

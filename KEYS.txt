@@ -16,3 +16,8 @@ Key
 HZLXQ37YR6PGEMW7
 Example
 https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=NZD&to_currency=KRW&apikey=HZLXQ37YR6PGEMW7
+
+
+NEWS API
+Key
+7542fec653094fa9a76f4ade5e186572

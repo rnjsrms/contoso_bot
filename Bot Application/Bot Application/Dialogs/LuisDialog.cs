@@ -9,6 +9,7 @@ using Bot_Application.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Bot_Application.Dialogs
 {
@@ -100,12 +101,10 @@ namespace Bot_Application.Dialogs
             }
             catch
             {
-                var message = "Unable to find stock data.\n\nPlease try again.";
+                var message = "Unable to fetch stock data.\n\nPlease try again.";
                 await context.PostAsync(message);
                 context.Wait(MessageReceived);
             }
-
-
         }
 
         [LuisIntent("CurrencyCalculation")]
@@ -166,6 +165,113 @@ namespace Bot_Application.Dialogs
                 await context.PostAsync(message);
                 context.Wait(MessageReceived);
             }
+        }
+
+        [LuisIntent("RealPerson")]
+        public async Task RealPerson(IDialogContext context, LuisResult result)
+        {
+            var message = "Sorry, there are no available representatives at the moment.\n\nPlease try again.";
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("News")]
+        public async Task News(IDialogContext context, LuisResult result)
+        {
+            string url = "https://newsapi.org/v2/top-headlines?sources=australian-financial-review&apiKey=7542fec653094fa9a76f4ade5e186572";
+
+            var client = new HttpClient();
+            HttpResponseMessage response;
+            response = await client.GetAsync(url);
+
+            try
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                NewsModel responseModel = JsonConvert.DeserializeObject<NewsModel>(responseString);
+
+                var message = context.MakeMessage();
+                await context.PostAsync("Here are some of the top headlines for today.\n\n(news provided by Australian Financial Review)");
+                message.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                message.Attachments = new List<Attachment>();
+
+                foreach (var news in responseModel.Articles)
+                {
+                    List<CardImage> cardImages = new List<CardImage>();
+                    cardImages.Add(new CardImage(url: news.UrlToImage));
+
+                    List<CardAction> cardButtons = new List<CardAction>();
+
+                    CardAction plButton = new CardAction()
+                    {
+                        Value = news.Url,
+                        Type = "openUrl",
+                        Title = "Link To Article"
+                    };
+
+                    cardButtons.Add(plButton);
+
+                    HeroCard plCard = new HeroCard()
+                    {
+                        Title = news.Title,
+                        Subtitle = news.Description,
+                        Images = cardImages,
+                        Buttons = cardButtons
+                    };
+
+                    Attachment plAttachment = plCard.ToAttachment();
+                    message.Attachments.Add(plAttachment);
+                }
+
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+            catch
+            {
+                var message = "Unable to fetch news data.\n\nPlease try again.";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+        }
+
+        [LuisIntent("Login")]
+        public async Task Login(IDialogContext context, LuisResult result)
+        {
+            var message = context.MakeMessage();
+
+            List<CardAction> cardButtons = new List<CardAction>();
+
+            CardAction plButton = new CardAction()
+            {
+                Value = $"https://<OAuthSignInURL",
+                Type = "signin",
+                Title = "Connect"
+            };
+
+            cardButtons.Add(plButton);
+
+            SigninCard plCard = new SigninCard(text: "Please sign in here", buttons: cardButtons);
+
+            Attachment plAttachment = plCard.ToAttachment();
+            message.Attachments.Add(plAttachment);
+
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("Contact")]
+        public async Task Contact(IDialogContext context, LuisResult result)
+        {
+            List<bankdetails> bankList = await AzureManager.AzureManagerInstance.GetBankList();
+
+            var message = "";
+
+            foreach (bankdetails bank in bankList)
+            {
+                message += bank.Name + "\n\n";
+            }
+
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
         }
     }
 }
