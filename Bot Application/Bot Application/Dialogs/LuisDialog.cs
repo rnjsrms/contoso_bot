@@ -17,7 +17,7 @@ namespace Bot_Application.Dialogs
     [Serializable]
     public class LuisDialog : LuisDialog<object>
     {
-        public string username;
+        public static userdetails user;
 
         [LuisIntent("")]
         public async Task All(IDialogContext context, LuisResult result)
@@ -263,27 +263,98 @@ namespace Bot_Application.Dialogs
                 newList.Add(user);
             }
 
-            context.Call<object>(new LoginDialog(newList), LoginComplete);
-        }
-
-        public virtual async Task LoginComplete(IDialogContext context, IAwaitable<object> response)
-        {
-            await context.PostAsync("You are now logged in!");
-            context.Done(this);
+            context.Call<object>(new LoginDialog(newList), DialogComplete);
         }
 
         [LuisIntent("Register")]
         public async Task Register(IDialogContext context, LuisResult result)
         {
-            context.Call<object>(new RegistrationDialog(), RegistrationComplete);
+            context.Call<object>(new RegistrationDialog(), DialogComplete);
         }
 
-        public virtual async Task RegistrationComplete(IDialogContext context, IAwaitable<object> response)
+        public virtual async Task DialogComplete(IDialogContext context, IAwaitable<object> response)
         {
-            await context.PostAsync("Thank you for registering with Contoso Bank.\n\nYou can now log in by entering: 'login' and following the steps.");
             context.Done(this);
         }
 
+        //FROM HERE ON, ALL FUNCTIONS REQUIRE LOGIN BEFOREHAND...
 
+        [LuisIntent("ManageAccount")]
+        public async Task ManageAccount(IDialogContext context, LuisResult result)
+        {
+            if (user == null)
+            {
+                var message = "You need to log in before trying to change account details...\n\nPlease try again after logging in.";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                var accountdetail = result.Entities.First().Entity;
+
+                var cardmessage = context.MakeMessage();
+                cardmessage.Attachments = new List<Attachment>();
+                CardAction ca1 = new CardAction()
+                {
+                    Title = "Yes",
+                    Value = "Yes"
+                };
+                CardAction ca2 = new CardAction()
+                {
+                    Title = "No",
+                    Value = "No"
+                };
+                HeroCard herocard = new HeroCard()
+                {
+                    Title = $"Change {accountdetail}",
+                    Subtitle = $"Are you sure you would like to change your {accountdetail}?",
+                    Buttons = new List<CardAction>()
+                };
+                herocard.Buttons.Add(ca1);
+                herocard.Buttons.Add(ca2);
+                cardmessage.Attachments.Add(herocard.ToAttachment());
+
+                await context.PostAsync(cardmessage);
+                context.Call<object>(new ManageAccountDialog(accountdetail), DialogComplete);
+            }
+        }
+
+        [LuisIntent("DeleteAccount")]
+        public async Task DeleteAccount(IDialogContext context, LuisResult result)
+        {
+            if (user == null)
+            {
+                var message = "You need to log in before trying to delete your account...\n\nPlease try again after logging in.";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                var cardmessage = context.MakeMessage();
+                cardmessage.Attachments = new List<Attachment>();
+                CardAction ca1 = new CardAction()
+                {
+                    Title = "Yes",
+                    Value = "Yes"
+                };
+                CardAction ca2 = new CardAction()
+                {
+                    Title = "No",
+                    Value = "No"
+                };
+                HeroCard herocard = new HeroCard()
+                {
+                    Title = $"Delete account",
+                    Subtitle = $"Are you sure you would like to permanently delete your account?",
+                    Buttons = new List<CardAction>()
+                };
+                herocard.Buttons.Add(ca1);
+                herocard.Buttons.Add(ca2);
+                cardmessage.Attachments.Add(herocard.ToAttachment());
+
+                await context.PostAsync(cardmessage);
+                context.Call<object>(new DeleteAccountDialog(), DialogComplete);
+            }
+        }
     }
 }

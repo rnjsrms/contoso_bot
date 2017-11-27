@@ -55,5 +55,15 @@ namespace Bot_Application
         {
             await this.userTable.InsertAsync(user);
         }
+
+        public async Task UpdateUser(userdetails user)
+        {
+            await this.userTable.UpdateAsync(user);
+        }
+
+        public async Task DeleteUser(userdetails user)
+        {
+            await this.userTable.DeleteAsync(user);
+        }
     }
 }

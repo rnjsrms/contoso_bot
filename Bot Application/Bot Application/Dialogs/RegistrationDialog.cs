@@ -20,7 +20,8 @@ namespace Bot_Application.Dialogs
         DateTime dateOfBirth;
         string email;
         string password;
-       
+        private static IEnumerable<string> cancelTerms = new[] { "cancel", "back", "abort" };
+
         public async Task StartAsync(IDialogContext context)
         {
             await context.PostAsync("Great! We can register you as a new user.\n\nWhat is your full name?");
@@ -31,6 +32,12 @@ namespace Bot_Application.Dialogs
         {
             var response = await activity;
             fullName = response.Text;
+
+            if (cancelTerms.Contains(fullName.ToLower()))
+            {
+                await context.PostAsync("Registration cancelled!");
+                context.EndConversation("Registration cancelled by user.");
+            }
 
             PromptDialog.Text(
                 context: context,
@@ -44,6 +51,12 @@ namespace Bot_Application.Dialogs
         {
             username = await Username;
 
+            if (cancelTerms.Contains(username.ToLower()))
+            {
+                await context.PostAsync("Registration cancelled!");
+                context.EndConversation("Registration cancelled by user.");
+            }
+
             PromptDialog.Text(
                 context: context,
                 resume: AskMobile,
@@ -55,6 +68,12 @@ namespace Bot_Application.Dialogs
         public virtual async Task AskMobile(IDialogContext context, IAwaitable<string> Address)
         {
             address = await Address;
+
+            if (cancelTerms.Contains(address.ToLower()))
+            {
+                await context.PostAsync("Registration cancelled!");
+                context.EndConversation("Registration cancelled by user.");
+            }
 
             PromptDialog.Text(
                 context: context,
@@ -68,6 +87,12 @@ namespace Bot_Application.Dialogs
         {
             mobile = await Mobile;
 
+            if (cancelTerms.Contains(mobile.ToLower()))
+            {
+                await context.PostAsync("Registration cancelled!");
+                context.EndConversation("Registration cancelled by user.");
+            }
+
             PromptDialog.Text(
                 context: context,
                 resume: AskDOB,
@@ -79,6 +104,12 @@ namespace Bot_Application.Dialogs
         public virtual async Task AskDOB(IDialogContext context, IAwaitable<string> Home)
         {
             home = await Home;
+
+            if (cancelTerms.Contains(home.ToLower()))
+            {
+                await context.PostAsync("Registration cancelled!");
+                context.EndConversation("Registration cancelled by user.");
+            }
 
             PromptDialog.Text(
                 context: context,
@@ -135,6 +166,7 @@ namespace Bot_Application.Dialogs
             message = $"Account Details\n\nName: {fullName}\n\nAddress: {address}\n\nMobile Phone: {mobile}\n\nHome Phone: {home}\n\nDate of Birth: {dateOfBirth.ToString("dd-MM-yyyy")}\n\nEmail: {email}";
             await context.PostAsync(message);
 
+            await context.PostAsync("Thank you for registering with Contoso Bank.\n\nYou can now log in by entering: 'login' and following the steps.");
             context.Done(this);
         }
     }

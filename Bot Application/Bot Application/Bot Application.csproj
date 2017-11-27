@@ -117,7 +117,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AzureManager.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Dialogs\DeleteAccountDialog.cs" />
     <Compile Include="Dialogs\LoginDialog.cs" />
+    <Compile Include="Dialogs\ManageAccountDialog.cs" />
     <Compile Include="Dialogs\RegistrationDialog.cs" />
     <Compile Include="Dialogs\LuisDialog.cs" />
     <Compile Include="Global.asax.cs">
