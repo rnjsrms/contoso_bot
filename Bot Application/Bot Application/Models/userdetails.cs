@@ -44,6 +44,10 @@ namespace Bot_Application.Models
 
         [JsonProperty(PropertyName = "password")]
         public string Password { get; set; }
+
+        [JsonProperty(PropertyName = "email")]
+        public string Email { get; set; }
     }
+
 
 }

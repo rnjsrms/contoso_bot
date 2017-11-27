@@ -17,6 +17,8 @@ namespace Bot_Application.Dialogs
     [Serializable]
     public class LuisDialog : LuisDialog<object>
     {
+        public string username;
+
         [LuisIntent("")]
         public async Task All(IDialogContext context, LuisResult result)
         {
@@ -252,85 +254,36 @@ namespace Bot_Application.Dialogs
         [LuisIntent("Login")]
         public async Task Login(IDialogContext context, LuisResult result)
         {
-            var message = context.MakeMessage();
+            List<userdetails> userList = await AzureManager.AzureManagerInstance.GetUserList();
 
-            List<CardAction> cardButtons = new List<CardAction>();
+            List<userdetails> newList = new List<userdetails>();
 
-            CardAction plButton = new CardAction()
+            foreach (userdetails user in userList)
             {
-                Value = $"https://<OAuthSignInURL",
-                Type = "signin",
-                Title = "Connect"
-            };
+                newList.Add(user);
+            }
 
-            cardButtons.Add(plButton);
+            context.Call<object>(new LoginDialog(newList), LoginComplete);
+        }
 
-            SigninCard plCard = new SigninCard(text: "Please sign in here", buttons: cardButtons);
-
-            Attachment plAttachment = plCard.ToAttachment();
-            message.Attachments.Add(plAttachment);
-
-            await context.PostAsync(message);
-            context.Wait(MessageReceived);
+        public virtual async Task LoginComplete(IDialogContext context, IAwaitable<object> response)
+        {
+            await context.PostAsync("You are now logged in!");
+            context.Done(this);
         }
 
         [LuisIntent("Register")]
         public async Task Register(IDialogContext context, LuisResult result)
         {
-            var message = context.MakeMessage();
-            var attachment = GetHeroCard();
-            message.Attachments.Add(attachment);
-            await context.PostAsync(message);
-
-            // Show the list of plan
-            context.Wait(this.ShowAnnuvalConferenceTicket);
+            context.Call<object>(new RegistrationDialog(), RegistrationComplete);
         }
 
-        private static Attachment GetHeroCard()
+        public virtual async Task RegistrationComplete(IDialogContext context, IAwaitable<object> response)
         {
-            var heroCard = new HeroCard
-            {
-                Title = "Annual Conference 2018 Registrtion ",
-                Subtitle = "DELHI, 13 - 15 APRIL 2018",
-                Text = "The C# Corner Annual Conference 2018 is a three-day annual event for software professionals and developers. First day is exclusive for C# Corner MVPs only. The second day is open to the public, and includes presentations from many top names in the industry. The third day events are, again, exclusively for C# Corner MVPs",
-                Images = new List<CardImage> { new CardImage("https://lh3.googleusercontent.com/-fnwLMmJTmdk/WaVt5LR2OZI/AAAAAAAAG90/qlltsHiSdZwVdOENv1yB25kuIvDWCMvWACLcBGAs/h120/annuvalevent.PNG") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "About US", value: "http://conference.c-sharpcorner.com/") }
-            };
-
-            return heroCard.ToAttachment();
-        }
-
-        public virtual async Task ShowAnnuvalConferenceTicket(IDialogContext context, IAwaitable<IMessageActivity> activity)
-        {
-            var message = await activity;
-
-            PromptDialog.Choice(
-                context: context,
-                resume: ChoiceReceivedAsync,
-                options: (IEnumerable<AnnuvalConferencePass>)Enum.GetValues(typeof(AnnuvalConferencePass)),
-                prompt: "Hi. Please Select Annuval Conference 2018 Pass :",
-                retry: "Selected plan not avilabel . Please try again.",
-                promptStyle: PromptStyle.Auto
-                );
-        }
-        public virtual async Task ChoiceReceivedAsync(IDialogContext context, IAwaitable<AnnuvalConferencePass> activity)
-        {
-            AnnuvalConferencePass response = await activity;
-            context.Call<object>(new AnnualPlanDialog(response.ToString()), ChildDialogComplete);
-
-        }
-        public virtual async Task ChildDialogComplete(IDialogContext context, IAwaitable<object> response)
-        {
-            await context.PostAsync("Thanks for select C# Corner bot for Annual Conference 2018 Registrion .");
+            await context.PostAsync("Thank you for registering with Contoso Bank.\n\nYou can now log in by entering: 'login' and following the steps.");
             context.Done(this);
         }
 
-        public enum AnnuvalConferencePass
-        {
-            EarlyBird,
-            Regular,
-            DelegatePass,
-            CareerandJobAdvice,
-        }
+
     }
 }

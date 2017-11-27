@@ -50,5 +50,10 @@ namespace Bot_Application
         {
             return await this.userTable.ToListAsync();
         }
+
+        public async Task PostUser(userdetails user)
+        {
+            await this.userTable.InsertAsync(user);
+        }
     }
 }
