@@ -47,7 +47,7 @@ namespace Bot_Application
                 if (message.MembersAdded.Any(o => o.Id == message.Recipient.Id))
                 {
                     ConnectorClient connector = new ConnectorClient(new Uri(message.ServiceUrl));
-                    Activity reply = message.CreateReply("Hi there!" + Environment.NewLine + "How can I help you today?");
+                    Activity reply = message.CreateReply("Hi there!\n\nHow can I help you today?");
                     connector.Conversations.ReplyToActivityAsync(reply);
                 }
             }
