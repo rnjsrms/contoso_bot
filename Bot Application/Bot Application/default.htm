@@ -1,12 +1,104 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <title></title>
-    <meta charset="utf-8" />
-</head>
-<body style="font-family:'Segoe UI'">
-    <h1>Bot_Application</h1>
-    <p>Describe your bot here and your terms of use etc.</p>
-    <p>Visit <a href="https://www.botframework.com/">Bot Framework</a> to register your bot. When you register it, remember to set your bot's endpoint to <pre>https://<i>your_bots_hostname</i>/api/messages</pre></p>
+<title>Contoso Bank</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+    body, h1 {
+        font-family: "Raleway", sans-serif
+    }
+
+    body, html {
+        height: 100%
+    }
+
+    .bgimg {
+        background-image: url('auck.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+
+    .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        background-color: #ffffff;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+
+    .sidenav a {
+        padding: 8px 8px 0px 32px;
+        text-decoration: none;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+        color: #000000;
+    }
+
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
+        .sidenav {
+            padding-top: 15px;
+        }
+
+        .sidenav a {
+            font-size: 18px;
+        }
+    }
+</style>
+<body>
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn w3-xlarge" onclick="closeNav()">close &times;</a>
+        <iframe style="width: 100%; height: 100%" src='https://webchat.botframework.com/embed/rnsjrms-contoso?s=5WTMt1ntzHs.cwA.zBo.DdN-1qrmUuk9tgpcOJs5D2qCCeZOTREWTsYVsKA9Lkk'></iframe>
+    </div>
+
+    <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+        <div style="position: fixed" class="w3-display-topleft w3-padding-large w3-xlarge">
+            contoso
+        </div>
+
+        <div style="position: fixed" class="w3-display-topright w3-padding-large w3-xlarge">
+            <span style="cursor:pointer" onclick="openNav()">chat bot &#9776;</span>
+        </div>
+
+        <div class="w3-display-middle">
+            <h1 class="w3-jumbo w3-animate-top w3-center">WELCOME TO THE FUTURE OF BANKING</h1>
+            <hr class="w3-border-grey" style="margin:auto;width:40%">
+            <p class="w3-large w3-center">Auckland</p>
+        </div>
+
+        <div class="w3-display-bottomleft w3-padding-large">
+            Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>
+        </div>
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "400px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
 </body>
 </html>
