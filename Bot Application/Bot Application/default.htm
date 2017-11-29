@@ -105,7 +105,15 @@
     <script src="https://cdn.botframework.com/botframework-webchat/latest/CognitiveServices.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
+        var width = "40%";
+
         function openNav() {
+            if ($(window).width() < 500) {
+                width = "100%";
+            }
+            else {
+                width = "40%";
+            }
             document.getElementById("mySidenav").style.width = "400px";
             document.getElementById("mySidenav2").style.width = "400px";
         }
