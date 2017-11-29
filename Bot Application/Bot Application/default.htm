@@ -68,7 +68,7 @@
 
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn w3-xlarge" onclick="closeNav()">close &times;</a>
-        <iframe id="BotChatGoesHere" style="width: 100%; height: 100%" src='https://webchat.botframework.com/embed/rnsjrms-contoso?s=5WTMt1ntzHs.cwA.zBo.DdN-1qrmUuk9tgpcOJs5D2qCCeZOTREWTsYVsKA9Lkk'></iframe>
+        <iframe style="width: 100%; height: 100%" src='https://webchat.botframework.com/embed/rnsjrms-contoso?s=5WTMt1ntzHs.cwA.zBo.DdN-1qrmUuk9tgpcOJs5D2qCCeZOTREWTsYVsKA9Lkk'></iframe>
     </div>
 
     <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
@@ -99,43 +99,6 @@
         function closeNav() {
             document.getElementById("mySidenav").style.width = "0";
         }
-
-        const params = BotChat.queryParams(location.search);
-
-        const user = {
-            id: params['userid'] || 'userid',
-            name: params['username'] || 'username'
-        };
-
-        const bot = {
-            id: params['botid'] || 'botid',
-            name: params['botname'] || 'botname'
-        };
-
-        window.botchatDebug = params['debug'] && params['debug'] === 'true';
-
-        // Option 2: Native browser speech (not supported by all browsers, no speech recognition priming support)
-      
-        const speechOptions = {
-            speechRecognizer: new BotChat.Speech.BrowserSpeechRecognizer(),
-            speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
-        };
-
-        BotChat.App({
-            bot: bot,
-            locale: params['locale'],
-            resize: 'detect',
-            // sendTyping: true,    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
-            speechOptions: speechOptions,
-            user: user,
-            // locale: 'es-es', // override locale to Spanish
-            directLine: {
-                domain: params['domain'],
-                secret: params['s'],
-                token: params['t'],
-                webSocket: params['webSocket'] && params['webSocket'] === 'true' // defaults to true
-            }
-        }, document.getElementById('BotChatGoesHere'));
     </script>
 </body>
 </html>
