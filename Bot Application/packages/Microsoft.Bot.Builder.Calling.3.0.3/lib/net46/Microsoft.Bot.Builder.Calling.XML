@@ -120,7 +120,7 @@
             The additional data when calling request has multipart content. 
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Calling.ParsedCallingRequest.SkypeChaindId">
+        <member name="P:Microsoft.Bot.Builder.Calling.ParsedCallingRequest.SkypeChainId">
             <summary>
             The Skype chain Id, look at the documentation X-Microsoft-Skype-Chain-ID header value.
             </summary>
@@ -158,6 +158,22 @@
             </summary>
             <param name="callType"> The type of calling request.</param>
             <returns> the parsed calling request.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Calling.CallingContext.GenerateParsedResults(System.Net.HttpStatusCode,System.String,System.Threading.Tasks.Task{System.IO.Stream})">
+            <summary>
+            Generate the <see cref="T:Microsoft.Bot.Builder.Calling.ParsedCallingRequest"/> from the arguments
+            </summary>
+            <param name="statusCode">Status code indicating if the parsing was successful or not</param>
+            <param name="content">Content from the request. If the request had multipart content, the first part should be json and this will contain the first json content</param>
+            <param name="additionalData">If the request had multipart content, this will contain the additional data present after the first json content</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Calling.CallingContext.ExtractSkypeChainId(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Extracts the X-Microsoft-Skype-Chain-Id header from the request that is used for correlating logs across different services for a call
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
         </member>
         <member name="T:Microsoft.Bot.Builder.Calling.ICallingBot">
             <summary>
@@ -400,14 +416,20 @@
             format is 1-8 digits followed by a colon followed by 1-512 characters.
             </summary>
         </member>
-        <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.CallStateChangeNotification">
+        <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.CallbackLink">
             <summary>
-            This concrete class defines the call state change notification schema.
+            Links for callbacks to the bot. For IVR calling only Callback has to be specified. For more advanced scenarios
+            like real-time media calling Notification has to be included.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.CallStateChangeNotification.CurrentState">
+        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.CallbackLink.Callback">
             <summary>
-            Call state types that will be used as part of call state change notification to the app.
+            Uri for the callbacks to the bot.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.CallbackLink.Notification">
+            <summary>
+            Uri for the notifications to the bot. Needed only for advanced scenarios like real-time media calling.
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ChoiceOutcome">
@@ -473,6 +495,11 @@
         <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.Conversation.IsMultiparty">
             <summary>
             Indicates whether a call is a group call
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.Conversation.ThreadMessageId">
+            <summary>
+            Identifies a specfic topic within a chat thread.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.Conversation.ThreadId">
@@ -556,40 +583,6 @@
         <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.HangupOutcome">
             <summary>
             This is the outcome of the "hangup" action. This is conveyed to the customer as POST to the customer CallBack Url (if specified).
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationBase">
-            <summary>
-            This base class defines a subset of properties which define a notification.
-            CallStateNotification and RosterUpdates are examples of Notifications.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationBase.Type">
-            <summary>
-            Type of Notification
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationConverter">
-            <summary>
-            By default Json.net doesn't know how to deserialize JSON data into Interfaces or abstract classes.
-            This custom Converter helps deserialize "Notifications" specified in JSON into respective concrete "Notification" classes.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationResponse">
-            <summary>
-            This class contains the response the customer sent for the notification POST to their callback url.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationResponse.Links">
-            <summary>
-            Callback link to call back the customer on, once we have processed the notification response from customer.
-            
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationResponse.AppState">
-            <summary>
-            Opaque string to facilitate app developers to pass their custom data in this field. 
-            This field is echo'd back in the 'result' POST for this 'response'.
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.OperationOutcomeBase">
@@ -903,11 +896,6 @@
             AnswerAction
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.AnswerAppHostedMediaAction">
-            <summary>
-            AnswerAppHostedMediaAction
-            </summary>
-        </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.HangupAction">
             <summary>
             HangupAction
@@ -933,26 +921,11 @@
             RejectAction
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.PlaceCallAction">
-            <summary>
-            PlaceCall
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.VideoSubscriptionAction">
-            <summary>
-            VideoSubscription
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.TransferAction">
-            <summary>
-            Attended transfer.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.actionsList">
+        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidActions.actionOrder">
             <summary>
             Dictionary of valid actions and their relative order
             +ve order reflect operations after and including call acceptance
-            -ve order reflect operations pre-call answering . ex: reject/redirect/simulRing/sequentialRing
+            -ve order reflect operations pre-call answering . ex: reject/redirect/sequentialRing
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidDtmfs">
@@ -975,11 +948,6 @@
             AnswerOutcome
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.AnswerAppHostedMediaOutcome">
-            <summary>
-            AnswerAppHostedMediaOutcome
-            </summary>
-        </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.HangupOutcome">
             <summary>
             HangupOutcome
@@ -995,11 +963,6 @@
             PlayPromptOutcome
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.PlaceCallOutcome">
-            <summary>
-            PlaceCallOutcome
-            </summary>
-        </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.RecordOutcome">
             <summary>
             RecordOutcome
@@ -1013,16 +976,6 @@
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.WorkflowValidationOutcome">
             <summary>
             WorkflowValidationOutcome
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.VideoSubscriptionOutcome">
-            <summary>
-            VideoSubscriptionOutcome
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.TransferOutcome">
-            <summary>
-            Attended transfer outcome.
             </summary>
         </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.ValidOutcomes.validOutcomes">
@@ -1065,36 +1018,20 @@
             This field is echo'd back in the 'result' POST for this 'workflow'.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.Workflow.NotificationSubscriptions">
+        <member name="M:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.Workflow.Validate">
             <summary>
-            This element indicates that application wants to receive notification updates. 
-            Call state notifications are added to this list by default and cannot be unsubscribed to.
-            Subscriptions to rosterUpdate are only used for multiParty calls.
+            Validate the WorkFlow
             </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.Workflow.Validate(System.Boolean)">
+            <summary>
+            Validate the WorkFlow
+            </summary>
+            <param name="expectEmptyActions">Allow Actions to be empty</param>
         </member>
         <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.WorkflowValidationOutcome">
             <summary>
             If the customer's "response" fails validation, this is the outcome conveyed to the customer as POST to the customer CallBack Url.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationType">
-            <summary>
-            List of various notification types 
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationType.Unknown">
-            <summary>
-            Not recognized notification type.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationType.RosterUpdate">
-            <summary>
-            Roster Update Notification
-            </summary>
-        </member>
-        <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Contracts.NotificationType.CallStateChange">
-            <summary>
-            Call State change notification
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Builder.Calling.ObjectModel.Misc.ApplicationState.Validate(System.String)">
@@ -1317,7 +1254,7 @@
         </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Misc.MaxValues.MediaConfigurationLength">
             <summary>
-            Max size of MediaConfiguration in AnswerAppHostedMedia actions.
+            Max size of MediaConfiguration in AnswerAppHostedMedia action.
             </summary>
         </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Misc.MaxValues.FileDownloadTimeout">
@@ -1327,7 +1264,7 @@
         </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Misc.MinValues.RecordingDuration">
             <summary>
-            JSON Content Type
+            Minimum allowed recording duration.
             </summary>
         </member>
         <member name="F:Microsoft.Bot.Builder.Calling.ObjectModel.Misc.MinValues.SilenceTimeout">
