@@ -61,8 +61,6 @@ C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.Bot.Connector.dll
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Logging.dll
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocol.Extensions.dll
-C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocols.dll
-C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Tokens.dll
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.Rest.ClientRuntime.dll
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.VisualStudio.Threading.dll
@@ -92,10 +90,7 @@ C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.Bot.Connector.xml
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Logging.xml
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocol.Extensions.xml
-C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocols.xml
-C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Protocols.OpenIdConnect.xml
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.IdentityModel.Tokens.xml
-C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.Rest.ClientRuntime.xml
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.VisualStudio.Threading.xml
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.VisualStudio.Validation.xml
 C:\Users\rnjsr\Desktop\contoso_bot\Bot Application\Bot Application\bin\Microsoft.WindowsAzure.Configuration.xml
