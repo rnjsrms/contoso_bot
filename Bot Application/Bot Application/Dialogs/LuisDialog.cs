@@ -40,9 +40,29 @@ namespace Bot_Application.Dialogs
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.SayAsync(text: "Sorry, I could not understand your message.", speak: "Sorry, I could not understand your message. BLAH BLAH BLAH BLAH BLAH!");
-            //string message = "Sorry, I could not understand your message.\n\nCould you please try rephrasing that?";
-            //await context.PostAsync(message);
+            string message = "Sorry, I could not understand your message.\n\nCould you please try rephrasing that?";
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("Help")]
+        public async Task Help(IDialogContext context, LuisResult result)
+        {
+            string message1 = "Here is a list of commands that I can understand:\n\n" +
+                "Contact Details - say 'Where is the nearest bank?'\n\n" +
+                "Currency Calculation - say 'What is 100 JPY to USD?'\n\n" +
+                "Exchange Rate - say 'What is the exchange rate for KRW?'\n\n" +
+                "News - say 'Whats on the news today?'\n\n" +
+                "Stock - say 'What is the stock price for MSFT?'\n\n" +
+                "To talk to one of our representatives - say 'I want to speak to a real person'\n\n";
+            await context.PostAsync(message1);
+
+            string message2 = "Here is a list of commands for account settings:\n\n" +
+                "Log in - say 'login'\n\n" +
+                "Log out - say 'log out\n\n" +
+                "Update Account Detail - say 'I want to change my address'\n\n" +
+                "Delete Account - say 'I want to delete my account'";
+            await context.PostAsync(message2);
             context.Wait(MessageReceived);
         }
 
@@ -240,11 +260,11 @@ namespace Bot_Application.Dialogs
         {
             List<bankdetails> bankList = await AzureManager.AzureManagerInstance.GetBankList();
 
-            var message = "";
+            var message = "Here is a list of our branchs' contact detail:\n\n";
 
             foreach (bankdetails bank in bankList)
             {
-                message += bank.Name + "\n\n";
+                message += $"{bank.Name} - {bank.Location} - {bank.Hours} - {bank.Phone}\n\n";
             }
 
             await context.PostAsync(message);
@@ -354,6 +374,44 @@ namespace Bot_Application.Dialogs
 
                 await context.PostAsync(cardmessage);
                 context.Call<object>(new DeleteAccountDialog(), DialogComplete);
+            }
+        }
+
+        [LuisIntent("Logout")]
+        public async Task Logout(IDialogContext context, LuisResult result)
+        {
+            if (user == null)
+            {
+                var message = "You need to log in before trying to delete your account...\n\nPlease try again after logging in.";
+                await context.PostAsync(message);
+                context.Wait(MessageReceived);
+            }
+            else
+            {
+                var cardmessage = context.MakeMessage();
+                cardmessage.Attachments = new List<Attachment>();
+                CardAction ca1 = new CardAction()
+                {
+                    Title = "Yes",
+                    Value = "Yes"
+                };
+                CardAction ca2 = new CardAction()
+                {
+                    Title = "No",
+                    Value = "No"
+                };
+                HeroCard herocard = new HeroCard()
+                {
+                    Title = $"Log out account",
+                    Subtitle = $"Are you sure you would like to log out?",
+                    Buttons = new List<CardAction>()
+                };
+                herocard.Buttons.Add(ca1);
+                herocard.Buttons.Add(ca2);
+                cardmessage.Attachments.Add(herocard.ToAttachment());
+
+                await context.PostAsync(cardmessage);
+                context.Call<object>(new LogoutDialog(), DialogComplete);
             }
         }
     }

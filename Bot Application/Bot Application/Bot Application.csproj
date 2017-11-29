@@ -159,6 +159,7 @@
     <Compile Include="AzureManager.cs" />
     <Compile Include="Controllers\CallingController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Dialogs\LogoutDialog.cs" />
     <Compile Include="Dialogs\DeleteAccountDialog.cs" />
     <Compile Include="Dialogs\LoginDialog.cs" />
     <Compile Include="Dialogs\ManageAccountDialog.cs" />
