@@ -31,7 +31,7 @@ namespace Bot_Application.Services
         /// <returns>Transcribed text. </returns>
         public async Task<string> GetTextFromAudioAsync(Stream audiostream)
         {
-            var requestUri = @"https://speech.platform.bing.com/recognize?scenarios=smd&appid=562ebb2a-e006-4071-8281-a8df809e255d&locale=en-US&device.os=bot&form=BCSSTT&version=3.0&format=json&instanceid=565D69FF-E928-4B7E-87DA-9A750B96D9E3&requestid=" + Guid.NewGuid();
+            var requestUri = this.speechRecognitionUri + Guid.NewGuid();
 
             using (var client = new HttpClient())
             {
