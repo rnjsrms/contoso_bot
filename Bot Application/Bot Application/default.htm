@@ -115,14 +115,35 @@
             document.getElementById("mySidenav2").style.width = "0";
         }
 
-        const speechOptions = {
-            speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: '5750a832d6224a3c882903eec935f08e' }),
-            speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
-                gender: CognitiveServices.SynthesisGender.Male,
-                subscriptionKey: '5750a832d6224a3c882903eec935f08e',
-                voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)'
-            })
-        };
+        function getToken() {
+         // Normally this token fetch is done from your secured backend to avoid exposing the API key and this call
+         // would be to your backend, or to retrieve a token that was served as part of the original page.
+         return fetch(
+           'https://api.cognitive.microsoft.com/sts/v1.0/issueToken',
+           {
+             headers: {
+                 'Ocp-Apim-Subscription-Key': '5750a832d6224a3c882903eec935f08e'
+             },
+             method: 'POST'
+           }
+         ).then(res => res.text());
+       }
+       const speechOptions = {
+         speechRecognizer: new CognitiveServices.SpeechRecognizer({
+           fetchCallback: (authFetchEventId) => getToken(),
+           fetchOnExpiryCallback: (authFetchEventId) => getToken()
+         }),
+         speechSynthesizer: new BotChat.Speech.BrowserSpeechSynthesizer()
+       };
+
+        //const speechOptions = {
+        //    speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: '5750a832d6224a3c882903eec935f08e' }),
+        //    speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
+        //        gender: CognitiveServices.SynthesisGender.Male,
+        //        subscriptionKey: '5750a832d6224a3c882903eec935f08e',
+        //        voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, BenjaminRUS)'
+        //    })
+        //};
 
         BotChat.App({
             directLine: { secret: 'cQxnfwhBvYs.cwA.JzA.XZlCEftWoF5hr-cKz1CwBYxfn4_f6DH7f7GSp6dBFZU' },
