@@ -171,10 +171,10 @@ namespace Bot_Application
             this.callStateMap[incomingCallEvent.IncomingCall.Id] = new CallState(incomingCallEvent.IncomingCall.Participants);
 
             incomingCallEvent.ResultingWorkflow.Actions = new List<ActionBase>
-                {
-                    new Answer { OperationId = Guid.NewGuid().ToString() },
-                    GetPromptForText(WelcomeMessage)
-                };
+            {
+                new Answer { OperationId = Guid.NewGuid().ToString() },
+                GetPromptForText(WelcomeMessage)
+            };
 
             return Task.FromResult(true);
         }
