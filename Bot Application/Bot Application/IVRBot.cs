@@ -14,13 +14,12 @@ namespace Bot_Application
 {
     public class IVRBot : IDisposable, ICallingBot
     {
-        // DTMF keys required for each of option, will be used for parsing results of recognize
         private const string Support = "1";
 
         // Response messages depending on user selection
-        private const string WelcomeMessage = "Hello, you have successfully connect with the Contoso Bot.";
-        private const string MainMenuPromptMessage = "If you have a life threatening medical emergency please contact the emergency services or go to your nearest hospital. For non-life threatening situations please press 1.";
-        private const string NoConsultantsMessage = "Whilst we wait to connect you, please leave your name and a description of your problem. You can press the hash key when finished. We will call you as soon as possible.";
+        private const string WelcomeMessage = "Hello, welcome to contoso bot speech service";
+        private const string MainMenuPromptMessage = "please press 1 to begin your service.";
+        private const string NoConsultantsMessage = "We currently have following services for you. Deposit, Withdraw, balance check, finding exchange rate of currencies, finding stock price of companies, display current news, deleting account. Please select or type one of the services. For your convinience, your voice will be translated into text. Please press the hash key when finished.";
         private const string EndingMessage = "Thank you for leaving the message, goodbye";
         private const string OptionMenuNotSupportedMessage = "The option you entered is not supported. Please try again.";
 
@@ -171,10 +170,10 @@ namespace Bot_Application
             this.callStateMap[incomingCallEvent.IncomingCall.Id] = new CallState(incomingCallEvent.IncomingCall.Participants);
 
             incomingCallEvent.ResultingWorkflow.Actions = new List<ActionBase>
-            {
-                new Answer { OperationId = Guid.NewGuid().ToString() },
-                GetPromptForText(WelcomeMessage)
-            };
+                {
+                    new Answer { OperationId = Guid.NewGuid().ToString() },
+                    GetPromptForText(WelcomeMessage)
+                };
 
             return Task.FromResult(true);
         }
@@ -199,11 +198,12 @@ namespace Bot_Application
             if (recordOutcomeEvent.RecordOutcome.Outcome == Outcome.Success)
             {
                 var record = await recordOutcomeEvent.RecordedContent;
-                string text = await this.GetTextFromAudioAsync(record);
+                var text = await this.GetTextFromAudioAsync(record);
 
                 var callState = this.callStateMap[recordOutcomeEvent.ConversationResult.Id];
 
-                await this.SendSTTResultToUser("We detected the following audio: " + text, callState.Participants);
+                await this.SendSTTResultToUser("You said: " + text, callState.Participants);
+
             }
 
             recordOutcomeEvent.ResultingWorkflow.Links = null;
