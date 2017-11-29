@@ -158,12 +158,12 @@ namespace Bot_Application.Dialogs
                 Email = email,
                 Password = password
             };
-            var message = $"Thanks {fullName}!\n\nYour account has now being created.\n\nPlease wait a few moments as this may take a while...";
+            var message = $"Thanks {fullName}!\n\nYour account is now being created.\n\nPlease wait a few moments as this may take a while...";
             await context.PostAsync(message);
 
             await AzureManager.AzureManagerInstance.PostUser(user);
 
-            message = $"Account Details\n\nName: {fullName}\n\nAddress: {address}\n\nMobile Phone: {mobile}\n\nHome Phone: {home}\n\nDate of Birth: {dateOfBirth.ToString("dd-MM-yyyy")}\n\nEmail: {email}";
+            message = $"Account Details\n\nUsername: {username}\n\nName: {fullName}\n\nAddress: {address}\n\nMobile Phone: {mobile}\n\nHome Phone: {home}\n\nDate of Birth: {dateOfBirth.ToString("dd-MM-yyyy")}\n\nEmail: {email}";
             await context.PostAsync(message);
 
             await context.PostAsync("Thank you for registering with Contoso Bank.\n\nYou can now log in by entering: 'login' and following the steps.");
