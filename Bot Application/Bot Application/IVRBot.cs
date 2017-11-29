@@ -18,7 +18,7 @@ namespace Bot_Application
         private const string Support = "1";
 
         // Response messages depending on user selection
-        private const string WelcomeMessage = "Hello, you have successfully contacted the Emergency Services Bot.";
+        private const string WelcomeMessage = "Hello, you have successfully connected to the Contoso Bot.";
         private const string MainMenuPromptMessage = "If you have a life threatening medical emergency please contact the emergency services or go to your nearest hospital. For non-life threatening situations please press 1.";
         private const string NoConsultantsMessage = "Whilst we wait to connect you, please leave your name and a description of your problem. You can press the hash key when finished. We will call you as soon as possible.";
         private const string EndingMessage = "Thank you for leaving the message, goodbye";
