@@ -414,5 +414,11 @@ namespace Bot_Application.Dialogs
                 context.Call<object>(new LogoutDialog(), DialogComplete);
             }
         }
+
+        [LuisIntent("Review")]
+        public async Task Review(IDialogContext context, LuisResult result)
+        {
+            context.Call<object>(new ReviewDialog(), DialogComplete);
+        }
     }
 }

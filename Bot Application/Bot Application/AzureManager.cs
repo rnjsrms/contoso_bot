@@ -15,12 +15,14 @@ namespace Bot_Application
         private MobileServiceClient client;
         private IMobileServiceTable<bankdetails> bankTable;
         private IMobileServiceTable<userdetails> userTable;
+        private IMobileServiceTable<reviewdetails> reviewTable;
 
         private AzureManager()
         {
             this.client = new MobileServiceClient("https://rnjsrms-contoso.azurewebsites.net");
             this.bankTable = this.client.GetTable<bankdetails>();
             this.userTable = this.client.GetTable<userdetails>();
+            this.reviewTable = this.client.GetTable<reviewdetails>();
         }
 
         public MobileServiceClient AzureClient
@@ -64,6 +66,11 @@ namespace Bot_Application
         public async Task DeleteUser(userdetails user)
         {
             await this.userTable.DeleteAsync(user);
+        }
+
+        public async Task PostReview(reviewdetails review)
+        {
+            await this.reviewTable.InsertAsync(review);
         }
     }
 }
