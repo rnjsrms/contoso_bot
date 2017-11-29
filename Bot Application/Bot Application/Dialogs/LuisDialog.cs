@@ -8,7 +8,6 @@ using System.Linq;
 using Bot_Application.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Text;
 using System.Collections.Generic;
 
 namespace Bot_Application.Dialogs
@@ -41,8 +40,9 @@ namespace Bot_Application.Dialogs
         [LuisIntent("None")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = "Sorry, I could not understand your message.\n\nCould you please try rephrasing that?";
-            await context.PostAsync(message);
+            await context.SayAsync(text: "Sorry, I could not understand your message.", speak: "Sorry, I could not understand your message. BLAH BLAH BLAH BLAH BLAH!");
+            //string message = "Sorry, I could not understand your message.\n\nCould you please try rephrasing that?";
+            //await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
 
